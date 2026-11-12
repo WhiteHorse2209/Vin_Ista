@@ -5,6 +5,1249 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>Vinista — Instagram Media Studio</title>
     <link rel="stylesheet" href="/static/css/app.css">
+    <style>
+/* ==========================================================================
+   VINISTA — PRODUCTION STYLING (TWO-PARTS SIDE-BY-SIDE METADATA + COMPACT DOCK)
+   ========================================================================== */
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+    /* Strict Rule: Absolutely no text blur, blush or glow halos */
+    text-shadow: none !important;
+    filter: none !important;
+}
+
+:root {
+    --ease-out-spring: cubic-bezier(0.16, 1, 0.3, 1);
+    
+    /* Intro Palette: Midnight Black + Pure White + Vibrant Golden Yellow */
+    --midnight: #070709;
+    --white: #FFFFFF;
+    --gold: #FFB800;
+    --gold-hover: #FFC72C;
+
+    /* Reels Palette: Retro Violet + Flame + Pale Yellow + Neon Cyan */
+    --violet-bg: #190133;
+    --flame: #FF4500;
+    --flame-hover: #E03D00;
+    --pale-yellow: #FFF3B0;
+    --neon-cyan: #00F0FF;
+
+    /* Posts Palette: Royal Blue + Light Cream + Amber Gold */
+    --royal-blue: #014BAA;
+    --cream: #F8F3F0;
+    --amber-gold: #FFB800;
+}
+
+html, body {
+    height: 100%;
+    min-height: 100vh;
+    min-height: 100dvh;
+    max-height: 100dvh;
+    overflow: hidden; /* Fits strictly to page on every route */
+    font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+
+body {
+    display: flex;
+    flex-direction: column;
+    transition: background-color 0.4s var(--ease-out-spring), color 0.3s ease;
+    background-color: var(--midnight);
+    color: var(--white);
+}
+
+/* ==========================================================================
+   THEME PALETTES PER ROUTE
+   ========================================================================== */
+
+/* 1. Intro Theme */
+body.theme-intro {
+    background-color: var(--midnight);
+    color: var(--white);
+}
+
+/* 2. Reels Theme: Retro Violet + Flame + Pale Yellow + Neon Cyan */
+body.theme-reel {
+    background-color: var(--violet-bg);
+    color: var(--pale-yellow);
+}
+
+/* 3. Posts Theme: Royal Blue + Light Cream + Amber Gold */
+body.theme-post {
+    background-color: var(--royal-blue);
+    color: var(--cream);
+}
+
+/* ============================================================
+   HEADER & LIVE CLOCK (Single Routing: Header is clean with Clock only)
+   ============================================================ */
+
+.app-header {
+    height: 52px;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    padding: 0 1.25rem;
+    background: rgba(0, 0, 0, 0.28);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    z-index: 100;
+}
+
+.header-container {
+    max-width: 1080px;
+    width: 100%;
+    margin: 0 auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.brand-title {
+    font-size: 1.15rem;
+    font-weight: 800;
+    letter-spacing: 1px;
+    text-decoration: none;
+    color: inherit;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.brand-logo-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--gold);
+    display: inline-block;
+    transition: background 0.3s ease;
+}
+
+body.theme-reel .brand-logo-dot {
+    background: var(--neon-cyan);
+}
+
+body.theme-post .brand-logo-dot {
+    background: var(--amber-gold);
+}
+
+/* Header Live Digital Clock */
+.header-right {
+    display: flex;
+    align-items: center;
+}
+
+.live-clock {
+    font-family: 'JetBrains Mono', ui-monospace, monospace;
+    font-size: 0.8rem;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    padding: 0.28rem 0.7rem;
+    border-radius: 9999px;
+    border: 1px solid rgba(255, 255, 255, 0.14);
+    background: rgba(255, 255, 255, 0.06);
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+}
+
+.clock-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: #10B981;
+    display: inline-block;
+}
+
+/* ============================================================
+   VIEWS WRAPPER (100dvh Fit, Ultra-Smooth Spring Transitions)
+   ============================================================ */
+
+.views-wrapper {
+    flex: 1;
+    position: relative;
+    width: 100%;
+    max-width: 1080px;
+    margin: 0 auto;
+    overflow: hidden;
+    padding-bottom: 70px; /* Space for Compact Apple Dock */
+}
+
+.view-panel {
+    position: absolute;
+    inset: 0;
+    bottom: 70px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 0.75rem 1.25rem;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(14px) scale(0.985);
+    transition: opacity 0.35s var(--ease-out-spring),
+                transform 0.35s var(--ease-out-spring),
+                visibility 0.35s;
+    pointer-events: none;
+}
+
+.view-panel.active {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0) scale(1);
+    pointer-events: auto;
+}
+
+.panel-content {
+    width: 100%;
+    max-width: 620px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    margin: auto 0;
+}
+
+.panel-content-wide {
+    max-width: 780px;
+}
+
+/* ============================================================
+   1. INTRO VIEW STYLES
+   ============================================================ */
+
+.intro-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.35rem 0.9rem;
+    border-radius: 9999px;
+    background: rgba(255, 184, 0, 0.09);
+    border: 1px solid rgba(255, 184, 0, 0.32);
+    font-size: 0.78rem;
+    font-weight: 700;
+    letter-spacing: 0.4px;
+    color: var(--gold);
+    margin-bottom: 1.25rem;
+}
+
+.intro-badge-pulse {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--gold);
+    display: inline-block;
+}
+
+.intro-title {
+    font-size: 2.85rem;
+    font-weight: 800;
+    line-height: 1.1;
+    letter-spacing: -1px;
+    margin-bottom: 0.85rem;
+    color: var(--white);
+}
+
+.highlight-gold {
+    color: var(--gold);
+}
+
+.intro-subtitle {
+    font-size: 1rem;
+    line-height: 1.5;
+    color: rgba(255, 255, 255, 0.72);
+    margin-bottom: 1.7rem;
+    max-width: 480px;
+    font-weight: 400;
+}
+
+.intro-shift-actions {
+    display: flex;
+    gap: 0.85rem;
+    width: 100%;
+    max-width: 440px;
+    justify-content: center;
+}
+
+.btn-shift {
+    flex: 1;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    padding: 0.72rem 1.15rem;
+    border-radius: 12px;
+    font-family: inherit;
+    font-size: 0.9rem;
+    font-weight: 700;
+    cursor: pointer;
+    text-decoration: none;
+    transition: transform 0.2s ease, background 0.2s ease, border-color 0.2s ease, color 0.2s ease;
+    white-space: nowrap;
+}
+
+.btn-shift:hover {
+    transform: translateY(-2px);
+}
+
+.btn-shift:hover .btn-arrow-icon {
+    transform: translateX(3px);
+}
+
+.btn-arrow-icon {
+    transition: transform 0.2s ease;
+}
+
+.btn-shift-gold {
+    background: var(--gold);
+    color: var(--midnight);
+    border: none;
+}
+
+.btn-shift-gold:hover {
+    background: var(--gold-hover);
+}
+
+.btn-shift-outline {
+    background: rgba(255, 255, 255, 0.05);
+    color: var(--white);
+    border: 1px solid rgba(255, 255, 255, 0.22);
+}
+
+.btn-shift-outline:hover {
+    border-color: var(--gold);
+    color: var(--gold);
+    background: rgba(255, 184, 0, 0.08);
+}
+
+/* ============================================================
+   2. REELS VIEW HEADER
+   ============================================================ */
+
+.reel-badge-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+    padding: 0.22rem 0.7rem;
+    border-radius: 9999px;
+    background: rgba(0, 240, 255, 0.1);
+    border: 1px solid rgba(0, 240, 255, 0.35);
+    color: var(--neon-cyan);
+    font-size: 0.72rem;
+    font-weight: 700;
+    margin-bottom: 0.45rem;
+}
+
+.reel-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--neon-cyan);
+}
+
+.reel-title-sm {
+    font-size: 1.7rem;
+    font-weight: 800;
+    letter-spacing: -0.5px;
+    margin-bottom: 0.25rem;
+    color: var(--pale-yellow);
+}
+
+.highlight-flame {
+    color: var(--flame);
+}
+
+.reel-desc-sm {
+    font-size: 0.82rem;
+    color: rgba(255, 243, 176, 0.8);
+    margin-bottom: 0.8rem;
+    font-weight: 500;
+}
+
+.search-box-reel {
+    display: flex;
+    width: 100%;
+    max-width: 500px;
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    border-radius: 12px;
+    padding: 3px;
+    gap: 4px;
+    margin-bottom: 0.55rem;
+}
+
+.search-box-reel input {
+    flex: 1;
+    background: transparent;
+    border: none;
+    outline: none;
+    padding: 0.52rem 0.75rem;
+    color: var(--pale-yellow);
+    font-family: inherit;
+    font-size: 0.88rem;
+}
+
+.search-box-reel input::placeholder {
+    color: rgba(255, 243, 176, 0.45);
+}
+
+.btn-paste-sm {
+    background: rgba(255, 255, 255, 0.12);
+    border: none;
+    color: var(--pale-yellow);
+    padding: 0 0.8rem;
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 0.78rem;
+    cursor: pointer;
+    transition: background 0.2s ease;
+}
+
+.btn-paste-sm:hover {
+    background: rgba(255, 255, 255, 0.2);
+}
+
+.btn-grab-reel {
+    background: var(--flame);
+    border: none;
+    color: #FFFFFF;
+    padding: 0 1.15rem;
+    border-radius: 8px;
+    font-weight: 700;
+    font-size: 0.84rem;
+    cursor: pointer;
+    transition: background 0.2s ease, transform 0.15s ease;
+}
+
+.btn-grab-reel:hover {
+    background: var(--flame-hover);
+    transform: translateY(-1px);
+}
+
+/* ============================================================
+   3. POSTS VIEW HEADER
+   ============================================================ */
+
+.post-badge-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+    padding: 0.22rem 0.7rem;
+    border-radius: 9999px;
+    background: rgba(255, 184, 0, 0.12);
+    border: 1px solid rgba(255, 184, 0, 0.38);
+    color: var(--amber-gold);
+    font-size: 0.72rem;
+    font-weight: 700;
+    margin-bottom: 0.45rem;
+}
+
+.post-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--amber-gold);
+}
+
+.post-title-sm {
+    font-size: 1.7rem;
+    font-weight: 800;
+    letter-spacing: -0.5px;
+    margin-bottom: 0.25rem;
+    color: var(--cream);
+}
+
+.highlight-cream {
+    color: var(--cream);
+}
+
+.post-desc-sm {
+    font-size: 0.82rem;
+    color: rgba(248, 243, 240, 0.85);
+    margin-bottom: 0.8rem;
+    font-weight: 500;
+}
+
+.search-box-post {
+    display: flex;
+    width: 100%;
+    max-width: 500px;
+    background: rgba(255, 255, 255, 0.12);
+    border: 1px solid rgba(255, 255, 255, 0.22);
+    border-radius: 12px;
+    padding: 3px;
+    gap: 4px;
+    margin-bottom: 0.55rem;
+}
+
+.search-box-post input {
+    flex: 1;
+    background: transparent;
+    border: none;
+    outline: none;
+    padding: 0.52rem 0.75rem;
+    color: var(--cream);
+    font-family: inherit;
+    font-size: 0.88rem;
+}
+
+.search-box-post input::placeholder {
+    color: rgba(248, 243, 240, 0.5);
+}
+
+.btn-paste-post {
+    background: rgba(255, 255, 255, 0.15);
+    border: none;
+    color: var(--cream);
+    padding: 0 0.8rem;
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 0.78rem;
+    cursor: pointer;
+    transition: background 0.2s ease;
+}
+
+.btn-paste-post:hover {
+    background: rgba(255, 255, 255, 0.25);
+}
+
+.btn-fetch-post {
+    background: var(--cream);
+    border: none;
+    color: var(--royal-blue);
+    padding: 0 1.15rem;
+    border-radius: 8px;
+    font-weight: 700;
+    font-size: 0.84rem;
+    cursor: pointer;
+    transition: background 0.2s ease, transform 0.15s ease;
+}
+
+.btn-fetch-post:hover {
+    background: #FFFFFF;
+    transform: translateY(-1px);
+}
+
+/* ============================================================
+   TWO-PARTS SIDE-BY-SIDE MEDIA RESULT CARD
+   ============================================================ */
+
+.media-result-container {
+    width: 100%;
+    max-width: 760px; /* Generous width for large video + airy metadata */
+    background: rgba(0, 0, 0, 0.44);
+    border: 1px solid rgba(255, 255, 255, 0.16);
+    border-radius: 16px;
+    padding: 1.1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.85rem;
+    margin-top: 0.35rem;
+    animation: entranceSpring 0.4s var(--ease-out-spring) forwards;
+}
+
+.result-layout-two-parts {
+    display: grid;
+    grid-template-columns: 240px 1fr; /* 240px large video, remaining for airy metadata */
+    gap: 1.25rem;
+    align-items: stretch;
+}
+
+/* Part 1: Media Preview Aside (Left) - Autoplay Reel & Featured Photo Made Bigger */
+.result-media-aside {
+    display: flex;
+    flex-direction: column;
+}
+
+.video-preview-wrapper-lg,
+.photo-featured-wrapper-lg {
+    position: relative;
+    width: 100%;
+    height: 310px; /* Big, tall, authentic vertical format */
+    background: #000000;
+    border-radius: 12px;
+    overflow: hidden;
+    border: 1px solid rgba(255, 255, 255, 0.14);
+    box-shadow: 0 10px 28px rgba(0, 0, 0, 0.5);
+}
+
+.video-preview-wrapper-lg video {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.photo-featured-wrapper-lg img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.live-playback-pill,
+.photo-counter-badge {
+    position: absolute;
+    top: 8px;
+    left: 8px;
+    font-size: 0.65rem;
+    font-weight: 700;
+    padding: 2px 8px;
+    border-radius: 9999px;
+    background: rgba(0, 0, 0, 0.72);
+    backdrop-filter: blur(8px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    color: #10B981;
+}
+
+.photo-counter-badge {
+    color: var(--white);
+}
+
+/* Part 2: Metadata Details Aside (Right) - Clean, Un-cramped Layout */
+.result-meta-aside {
+    display: flex;
+    flex-direction: column;
+    text-align: left;
+    min-width: 0; /* Prevents text overflow */
+}
+
+.meta-header-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 0.65rem;
+}
+
+.account-identity {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    min-width: 0;
+}
+
+.account-avatar-placeholder {
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.12);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.85rem;
+    font-weight: 800;
+    flex-shrink: 0;
+}
+
+body.theme-reel .account-avatar-placeholder {
+    color: var(--flame);
+    border-color: rgba(255, 69, 0, 0.4);
+}
+
+body.theme-post .account-avatar-placeholder {
+    color: var(--amber-gold);
+    border-color: rgba(255, 184, 0, 0.4);
+}
+
+.account-names {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+}
+
+.account-display-name {
+    font-size: 0.92rem;
+    font-weight: 700;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    color: var(--white);
+}
+
+body.theme-reel .account-display-name {
+    color: var(--pale-yellow);
+}
+
+body.theme-post .account-display-name {
+    color: var(--cream);
+}
+
+.account-handle-badge {
+    font-size: 0.74rem;
+    font-weight: 600;
+    opacity: 0.75;
+}
+
+.meta-pill-quality {
+    font-size: 0.68rem;
+    font-weight: 700;
+    padding: 2px 8px;
+    border-radius: 9999px;
+    white-space: nowrap;
+    flex-shrink: 0;
+}
+
+body.theme-reel .meta-pill-quality {
+    background: rgba(0, 240, 255, 0.12);
+    border: 1px solid rgba(0, 240, 255, 0.35);
+    color: var(--neon-cyan);
+}
+
+body.theme-post .meta-pill-quality {
+    background: rgba(255, 184, 0, 0.12);
+    border: 1px solid rgba(255, 184, 0, 0.35);
+    color: var(--amber-gold);
+}
+
+/* Dedicated Airy Caption Card Aside (NOT squeezed/merged!) */
+.meta-caption-card {
+    background: rgba(0, 0, 0, 0.32);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 10px;
+    padding: 0.65rem 0.85rem;
+    margin-bottom: 0.65rem;
+    flex: 1; /* Occupies generous vertical room */
+    display: flex;
+    flex-direction: column;
+    min-height: 85px;
+}
+
+.caption-card-header {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-size: 0.68rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+    opacity: 0.7;
+    margin-bottom: 0.35rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    padding-bottom: 0.25rem;
+}
+
+.caption-text-content {
+    font-size: 0.82rem;
+    line-height: 1.5;
+    max-height: 90px;
+    overflow-y: auto;
+    word-break: break-word;
+    opacity: 0.95;
+    white-space: pre-wrap;
+    scrollbar-width: thin;
+}
+
+/* Specs Strip */
+.meta-specs-strip {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
+    padding: 0.4rem 0.6rem;
+    gap: 0.3rem;
+    margin-bottom: 0.75rem;
+}
+
+.spec-item {
+    display: flex;
+    flex-direction: column;
+}
+
+.spec-label {
+    font-size: 0.62rem;
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+    opacity: 0.6;
+    margin-bottom: 1px;
+}
+
+.spec-value {
+    font-size: 0.76rem;
+    font-weight: 700;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* Download Options DOWN with great animation */
+.result-download-down {
+    display: flex;
+    gap: 0.5rem;
+    margin-top: auto;
+}
+
+.btn-download-primary {
+    flex: 1.3;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.45rem;
+    text-decoration: none;
+    font-family: inherit;
+    font-size: 0.82rem;
+    font-weight: 700;
+    padding: 0.58rem 1rem;
+    border-radius: 9px;
+    border: none;
+    cursor: pointer;
+    transition: transform 0.18s ease, background 0.2s ease, box-shadow 0.2s ease;
+    white-space: nowrap;
+}
+
+body.theme-reel .btn-download-primary {
+    background: var(--flame);
+    color: #FFFFFF;
+}
+
+body.theme-reel .btn-download-primary:hover {
+    background: var(--flame-hover);
+    box-shadow: 0 4px 14px rgba(255, 69, 0, 0.35);
+}
+
+body.theme-post .btn-download-primary {
+    background: var(--cream);
+    color: var(--royal-blue);
+}
+
+body.theme-post .btn-download-primary:hover {
+    background: #FFFFFF;
+    box-shadow: 0 4px 14px rgba(248, 243, 240, 0.28);
+}
+
+.btn-action-outline {
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.16);
+    color: inherit;
+    font-family: inherit;
+    font-size: 0.8rem;
+    font-weight: 600;
+    padding: 0.58rem 0.85rem;
+    border-radius: 9px;
+    cursor: pointer;
+    transition: background 0.2s ease;
+    white-space: nowrap;
+}
+
+.btn-action-outline:hover {
+    background: rgba(255, 255, 255, 0.2);
+}
+
+.btn-download-primary:hover .download-bounce-icon {
+    animation: downloadBounce 0.65s ease infinite;
+}
+
+@keyframes downloadBounce {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(3px); }
+}
+
+/* ============================================================
+   POSTS GALLERY DRAWER (Below the 2-parts card)
+   ============================================================ */
+
+.gallery-drawer-wrap {
+    width: 100%;
+    margin-top: 0.15rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    padding-top: 0.55rem;
+}
+
+.gallery-drawer-title {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.74rem;
+    font-weight: 700;
+    opacity: 0.85;
+    margin-bottom: 0.4rem;
+}
+
+.gallery-drawer {
+    max-height: 110px;
+    overflow-y: auto;
+    background: rgba(0, 0, 0, 0.22);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 10px;
+    padding: 0.45rem;
+}
+
+.photos-grid-compact {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(88px, 1fr));
+    gap: 0.4rem;
+}
+
+.photo-item {
+    background: rgba(0, 0, 0, 0.35);
+    border-radius: 7px;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    cursor: pointer;
+    transition: transform 0.15s ease;
+}
+
+.photo-item:hover {
+    transform: translateY(-1px);
+}
+
+.photo-item img {
+    width: 100%;
+    height: 60px;
+    object-fit: cover;
+}
+
+.photo-item a {
+    font-size: 0.64rem;
+    font-weight: 700;
+    color: var(--cream);
+    text-align: center;
+    padding: 0.24rem 0.2rem;
+    text-decoration: none;
+    background: rgba(255, 255, 255, 0.12);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.2rem;
+    transition: background 0.2s ease;
+}
+
+.photo-item a:hover {
+    background: rgba(255, 255, 255, 0.22);
+}
+
+/* ============================================================
+   EXTRACTION ANIMATION HUD & RADAR
+   ============================================================ */
+
+.extraction-hud {
+    width: 100%;
+    max-width: 420px;
+    margin: 0.6rem auto;
+    text-align: center;
+    animation: entranceSpring 0.3s ease forwards;
+}
+
+.radar-spinner {
+    width: 42px;
+    height: 42px;
+    position: relative;
+    margin: 0 auto 0.5rem;
+    border-radius: 50%;
+    border: 2px solid rgba(255, 255, 255, 0.16);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+body.theme-intro .radar-spinner { border-color: rgba(255, 184, 0, 0.3); }
+body.theme-reel .radar-spinner { border-color: rgba(0, 240, 255, 0.3); }
+body.theme-post .radar-spinner { border-color: rgba(255, 184, 0, 0.3); }
+
+.radar-sweep {
+    position: absolute;
+    inset: -2px;
+    border-radius: 50%;
+    border-top: 3px solid #FFFFFF;
+    border-right: 3px solid transparent;
+    animation: radarSpin 0.85s linear infinite;
+}
+
+body.theme-intro .radar-sweep { border-top-color: var(--gold); }
+body.theme-reel .radar-sweep { border-top-color: var(--neon-cyan); }
+body.theme-post .radar-sweep { border-top-color: var(--amber-gold); }
+
+@keyframes radarSpin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+.progress-pct {
+    font-family: 'JetBrains Mono', ui-monospace, monospace;
+    font-size: 1.3rem;
+    font-weight: 700;
+    margin-bottom: 0.25rem;
+}
+
+.progress-track-sm {
+    width: 100%;
+    height: 5px;
+    background: rgba(255, 255, 255, 0.12);
+    border-radius: 9999px;
+    overflow: hidden;
+    margin-bottom: 0.35rem;
+}
+
+.progress-bar-sm {
+    height: 100%;
+    width: 0%;
+    background: #FFFFFF;
+    transition: width 0.15s ease;
+}
+
+body.theme-intro .progress-bar-sm { background: var(--gold); }
+body.theme-reel .progress-bar-sm { background: var(--neon-cyan); }
+body.theme-post .progress-bar-sm { background: var(--amber-gold); }
+
+.progress-status-sm {
+    font-size: 0.74rem;
+    opacity: 0.8;
+}
+
+.error-msg-box {
+    width: 100%;
+    max-width: 500px;
+    background: rgba(239, 68, 68, 0.16);
+    border: 1px solid rgba(239, 68, 68, 0.4);
+    color: #FCA5A5;
+    padding: 0.55rem 0.85rem;
+    border-radius: 10px;
+    font-size: 0.8rem;
+    margin-bottom: 0.55rem;
+    text-align: left;
+}
+
+@keyframes entranceSpring {
+    0% {
+        opacity: 0;
+        transform: translateY(14px) scale(0.97);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+/* ============================================================
+   APPLE-STYLE DOCK (COMPACT & REFINED SIZING)
+   ============================================================ */
+
+.apple-dock-wrapper {
+    position: fixed;
+    bottom: 16px;
+    left: 0;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    pointer-events: none;
+    z-index: 999;
+}
+
+.apple-dock {
+    pointer-events: auto;
+    display: flex;
+    align-items: flex-end;
+    gap: 14px; /* Clean, refined spacing */
+    padding: 6px 16px; /* Compact padding */
+    border-radius: 20px;
+    background: rgba(18, 18, 22, 0.85);
+    backdrop-filter: blur(28px) saturate(180%);
+    -webkit-backdrop-filter: blur(28px) saturate(180%);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.55), 0 1px 2px rgba(255, 255, 255, 0.1) inset;
+    transform: translateZ(0);
+}
+
+.dock-item {
+    position: relative;
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    color: #FFFFFF;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    outline: none;
+    transition: transform 0.2s var(--ease-out-spring), background 0.2s ease, border-color 0.2s ease;
+    will-change: transform;
+}
+
+.dock-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    pointer-events: none;
+}
+
+/* Dock Label (macOS Tooltip) */
+.dock-label {
+    position: absolute;
+    bottom: calc(100% + 10px);
+    left: 50%;
+    transform: translateX(-50%) translateY(3px);
+    background: rgba(12, 12, 15, 0.95);
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    color: #FFFFFF;
+    font-size: 0.68rem;
+    font-weight: 700;
+    letter-spacing: 0.3px;
+    padding: 2px 7px;
+    border-radius: 6px;
+    white-space: nowrap;
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+    transition: opacity 0.18s ease, transform 0.18s ease, visibility 0.18s;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.45);
+}
+
+.dock-item:hover .dock-label {
+    opacity: 1;
+    visibility: visible;
+    transform: translateX(-50%) translateY(0);
+}
+
+/* Active Indicator Dot */
+.dock-dot {
+    position: absolute;
+    bottom: -5px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 3.5px;
+    height: 3.5px;
+    border-radius: 50%;
+    background: #FFFFFF;
+    opacity: 0;
+    transition: opacity 0.2s ease, background 0.2s ease;
+}
+
+.dock-item.active .dock-dot {
+    opacity: 1;
+}
+
+body.theme-intro .dock-item.active .dock-dot { background: var(--gold); }
+body.theme-reel .dock-item.active .dock-dot { background: var(--flame); }
+body.theme-post .dock-item.active .dock-dot { background: var(--cream); }
+
+.dock-item.active {
+    background: rgba(255, 255, 255, 0.18);
+    border-color: rgba(255, 255, 255, 0.3);
+}
+
+body.theme-intro .dock-item.active { border-color: rgba(255, 184, 0, 0.45); }
+body.theme-reel .dock-item.active { border-color: rgba(255, 69, 0, 0.45); }
+body.theme-post .dock-item.active { border-color: rgba(248, 243, 240, 0.45); }
+
+/* ============================================================
+   RESPONSIVE DESIGN (MOBILE PHONE OPTIMIZATION)
+   ============================================================ */
+
+@media (max-width: 640px) {
+    .app-header {
+        height: 48px;
+        padding: 0 0.85rem;
+    }
+
+    .brand-title {
+        font-size: 0.95rem;
+    }
+
+    .views-wrapper {
+        padding-bottom: 66px;
+    }
+
+    .view-panel {
+        bottom: 66px;
+        padding: 0.5rem 0.8rem;
+    }
+
+    .intro-title {
+        font-size: 1.85rem;
+        letter-spacing: -0.5px;
+    }
+
+    .intro-subtitle {
+        font-size: 0.84rem;
+        margin-bottom: 1.2rem;
+    }
+
+    .intro-shift-actions {
+        flex-direction: column;
+        width: 100%;
+        gap: 0.45rem;
+    }
+
+    .btn-shift {
+        padding: 0.62rem 0.95rem;
+        font-size: 0.82rem;
+    }
+
+    .reel-title-sm,
+    .post-title-sm {
+        font-size: 1.35rem;
+    }
+
+    .search-box-reel,
+    .search-box-post {
+        flex-wrap: wrap;
+        padding: 3px;
+    }
+
+    .search-box-reel input,
+    .search-box-post input {
+        width: 100%;
+        padding: 0.45rem 0.55rem;
+    }
+
+    .btn-paste-sm,
+    .btn-paste-post {
+        flex: 1;
+        padding: 0.5rem 0.45rem;
+    }
+
+    .btn-grab-reel,
+    .btn-fetch-post {
+        flex: 1.5;
+        padding: 0.5rem 0.45rem;
+    }
+
+    /* Stack to vertical on narrow phone screens */
+    .result-layout-two-parts {
+        grid-template-columns: 1fr;
+        gap: 0.65rem;
+    }
+
+    .video-preview-wrapper-lg,
+    .photo-featured-wrapper-lg {
+        height: 180px;
+    }
+
+    .caption-text-content {
+        max-height: 50px;
+    }
+
+    .gallery-drawer {
+        max-height: 80px;
+    }
+
+    .apple-dock-wrapper {
+        bottom: 10px;
+        padding-bottom: env(safe-area-inset-bottom, 4px);
+    }
+
+    .apple-dock {
+        gap: 12px;
+        padding: 5px 14px;
+        border-radius: 18px;
+    }
+
+    .dock-item {
+        width: 36px;
+        height: 36px;
+    }
+}
+
+    </style>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600;700&display=swap" rel="stylesheet">
@@ -328,6 +1571,596 @@
         </nav>
     </div>
 
+    <script>
+/**
+ * VINISTA — SEAMLESS PAGE SHIFTING, APPLE DOCK MAGNIFICATION & METADATA CONTROLLER
+ */
+
+// 1. Unified Router (Driven solely by Apple Dock)
+function switchView(targetView, updateUrl = true) {
+    const panels = document.querySelectorAll('.view-panel');
+    const dockButtons = document.querySelectorAll('.dock-item');
+    const body = document.body;
+
+    // Reset active classes
+    panels.forEach(p => p.classList.remove('active'));
+    dockButtons.forEach(d => d.classList.remove('active'));
+
+    // Reset body theme classes
+    body.classList.remove('theme-intro', 'theme-reel', 'theme-post');
+
+    if (targetView === 'reel') {
+        const reelPanel = document.getElementById('viewReel');
+        if (reelPanel) reelPanel.classList.add('active');
+        
+        const dockReel = document.getElementById('dockReel');
+        if (dockReel) dockReel.classList.add('active');
+        
+        body.classList.add('theme-reel');
+        if (updateUrl) history.pushState({ view: 'reel' }, '', '/reel');
+    } else if (targetView === 'post') {
+        const postPanel = document.getElementById('viewPost');
+        if (postPanel) postPanel.classList.add('active');
+        
+        const dockPost = document.getElementById('dockPost');
+        if (dockPost) dockPost.classList.add('active');
+        
+        body.classList.add('theme-post');
+        if (updateUrl) history.pushState({ view: 'post' }, '', '/post');
+    } else {
+        // default: intro
+        const introPanel = document.getElementById('viewIntro');
+        if (introPanel) introPanel.classList.add('active');
+        
+        const dockIntro = document.getElementById('dockIntro');
+        if (dockIntro) dockIntro.classList.add('active');
+        
+        body.classList.add('theme-intro');
+        if (updateUrl) history.pushState({ view: 'intro' }, '', '/');
+    }
+}
+
+// Browser Back/Forward navigation
+window.addEventListener('popstate', (e) => {
+    const path = window.location.pathname;
+    if (path.includes('/reel')) {
+        switchView('reel', false);
+    } else if (path.includes('/post')) {
+        switchView('post', false);
+    } else {
+        switchView('intro', false);
+    }
+});
+
+// 2. Apple Dock Magnification Physics (Compact, Subtle, Elegant)
+function initAppleDockMagnification() {
+    const dock = document.getElementById('appleDock');
+    if (!dock) return;
+
+    const items = dock.querySelectorAll('.dock-item');
+    const maxDistance = 75;  // Compact influence zone
+    const maxScale = 1.18;   // Subtle elegant lift
+
+    const isHoverable = window.matchMedia('(hover: hover)').matches;
+    if (!isHoverable) return;
+
+    dock.addEventListener('mousemove', (e) => {
+        const mouseX = e.clientX;
+
+        items.forEach(item => {
+            const rect = item.getBoundingClientRect();
+            const itemCenterX = rect.left + rect.width / 2;
+            const distance = Math.abs(mouseX - itemCenterX);
+
+            if (distance < maxDistance) {
+                const factor = 1 - (distance / maxDistance);
+                const scale = 1 + (maxScale - 1) * Math.sin((factor * Math.PI) / 2);
+                item.style.transform = `scale(${scale}) translateY(-${(scale - 1) * 8}px)`;
+            } else {
+                item.style.transform = 'scale(1) translateY(0)';
+            }
+        });
+    });
+
+    dock.addEventListener('mouseleave', () => {
+        items.forEach(item => {
+            item.style.transform = 'scale(1) translateY(0)';
+        });
+    });
+}
+
+// 3. Live Digital Clock (HH:MM:SS)
+function initLiveClock() {
+    const hoursEl = document.getElementById('clockHours');
+    const minutesEl = document.getElementById('clockMinutes');
+    const secondsEl = document.getElementById('clockSeconds');
+
+    if (!hoursEl || !minutesEl || !secondsEl) return;
+
+    function update() {
+        const now = new Date();
+        hoursEl.textContent = String(now.getHours()).padStart(2, '0');
+        minutesEl.textContent = String(now.getMinutes()).padStart(2, '0');
+        secondsEl.textContent = String(now.getSeconds()).padStart(2, '0');
+    }
+    update();
+    setInterval(update, 1000);
+}
+
+// 4. Custom Filename Generator: SJ_{accountname}_{reelname}_{downloaded_time}
+function getDownloadTimestamp() {
+    const now = new Date();
+    const pad = (n) => String(n).padStart(2, '0');
+    const yyyy = now.getFullYear();
+    const mm = pad(now.getMonth() + 1);
+    const dd = pad(now.getDate());
+    const hh = pad(now.getHours());
+    const min = pad(now.getMinutes());
+    const ss = pad(now.getSeconds());
+    return `${yyyy}${mm}${dd}_${hh}${min}${ss}`;
+}
+
+function sanitizeForFilename(str, maxLen = 30) {
+    if (!str) return 'media';
+    return str
+        .replace(/@/g, '')
+        .replace(/[^a-zA-Z0-9_-]/g, '_')
+        .replace(/_+/g, '_')
+        .replace(/^_|_$/g, '')
+        .slice(0, maxLen) || 'media';
+}
+
+// 5. Reels Downloader Controller (Large Autoplay Reel Aside + Clean Metadata Aside + Custom Download Naming)
+function initReelController() {
+    const reelUrlInput = document.getElementById('reelUrl');
+    const pasteBtn = document.getElementById('pasteBtn');
+    const grabBtn = document.getElementById('grabBtn');
+    const loadingState = document.getElementById('reelLoading');
+    const progressValue = document.getElementById('reelProgressVal');
+    const progressBarFill = document.getElementById('reelProgressFill');
+    const progressStatusLabel = document.getElementById('reelProgressStatus');
+    const errorBox = document.getElementById('reelError');
+    const resultCard = document.getElementById('reelResult');
+    
+    // Metadata fields
+    const videoPlayer = document.getElementById('videoPlayer');
+    const authorName = document.getElementById('authorName');
+    const authorHandle = document.getElementById('authorHandle');
+    const accountAvatarLetter = document.getElementById('accountAvatarLetter');
+    const reelDateVal = document.getElementById('reelDateVal');
+    const videoCaption = document.getElementById('videoCaption');
+    const downloadBtn = document.getElementById('downloadBtn');
+    const resetBtn = document.getElementById('resetBtn');
+
+    if (!grabBtn) return;
+
+    if (pasteBtn) {
+        pasteBtn.addEventListener('click', async () => {
+            try {
+                const text = await navigator.clipboard.readText();
+                if (text) reelUrlInput.value = text.trim();
+            } catch (e) {
+                reelUrlInput.focus();
+            }
+        });
+    }
+
+    reelUrlInput.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') grabBtn.click();
+    });
+
+    grabBtn.addEventListener('click', async () => {
+        const url = reelUrlInput.value.trim();
+        if (!url) {
+            showReelError("Please enter an Instagram Reel URL.");
+            return;
+        }
+
+        errorBox.style.display = 'none';
+        resultCard.style.display = 'none';
+        loadingState.style.display = 'block';
+        grabBtn.disabled = true;
+
+        if (progressValue) progressValue.textContent = '0';
+        if (progressBarFill) progressBarFill.style.width = '0%';
+        if (progressStatusLabel) progressStatusLabel.textContent = 'Connecting to Instagram...';
+
+        let p = 0;
+        const interval = setInterval(() => {
+            if (p < 90) {
+                p += Math.floor(Math.random() * 6) + 3;
+                if (p > 90) p = 90;
+                if (progressValue) progressValue.textContent = p;
+                if (progressBarFill) progressBarFill.style.width = `${p}%`;
+
+                if (p < 30) {
+                    if (progressStatusLabel) progressStatusLabel.textContent = 'Connecting to Instagram server...';
+                } else if (p < 70) {
+                    if (progressStatusLabel) progressStatusLabel.textContent = 'Extracting video stream...';
+                } else {
+                    if (progressStatusLabel) progressStatusLabel.textContent = 'Processing 1080p MP4 asset...';
+                }
+            }
+        }, 110);
+
+        try {
+            const resp = await fetch('/api/download-reel', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ url: url })
+            });
+            const data = await resp.json();
+            clearInterval(interval);
+
+            if (!resp.ok || !data.success) {
+                throw new Error(data.error || 'Failed to download reel.');
+            }
+
+            if (progressValue) progressValue.textContent = '100';
+            if (progressBarFill) progressBarFill.style.width = '100%';
+            if (progressStatusLabel) progressStatusLabel.textContent = 'Extraction complete!';
+            await new Promise(r => setTimeout(r, 220));
+
+            const filename = data.filename;
+            const previewUrl = `/preview/${encodeURIComponent(filename)}`;
+            
+            // Set video source and automatically play in larger frame
+            videoPlayer.src = previewUrl;
+            videoPlayer.load();
+            videoPlayer.muted = true; // Required by browsers for immediate autoplay
+            videoPlayer.play().catch(e => console.log('Autoplay handled:', e));
+
+            // Populate clean metadata aside
+            const uploaderHandle = data.uploader || 'user';
+            const displayName = data.author || data.uploader || 'Instagram Creator';
+            
+            authorName.textContent = displayName;
+            authorHandle.textContent = `@${uploaderHandle.replace(/^@/, '')}`;
+            accountAvatarLetter.textContent = (uploaderHandle[0] || 'I').toUpperCase();
+            reelDateVal.textContent = data.date || 'Recent';
+            if (videoCaption) videoCaption.textContent = data.caption || data.title || 'Instagram Reel Video';
+
+            // Generate exact custom download filename: SJ_accountname_reelname_downloaded_time.mp4
+            const accClean = sanitizeForFilename(uploaderHandle);
+            const reelClean = sanitizeForFilename(data.title || data.shortcode || 'reel');
+            const timeClean = getDownloadTimestamp();
+            const customReelFilename = `SJ_${accClean}_${reelClean}_${timeClean}.mp4`;
+
+            downloadBtn.href = `/download/${encodeURIComponent(filename)}?name=${encodeURIComponent(customReelFilename)}`;
+            downloadBtn.setAttribute('download', customReelFilename);
+
+            loadingState.style.display = 'none';
+            resultCard.style.display = 'flex';
+        } catch (err) {
+            clearInterval(interval);
+            loadingState.style.display = 'none';
+            showReelError(err.message || 'Error fetching reel.');
+        } finally {
+            grabBtn.disabled = false;
+        }
+    });
+
+    resetBtn.addEventListener('click', () => {
+        videoPlayer.pause();
+        videoPlayer.src = '';
+        resultCard.style.display = 'none';
+        errorBox.style.display = 'none';
+        reelUrlInput.value = '';
+        reelUrlInput.focus();
+    });
+
+    function showReelError(msg) {
+        errorBox.textContent = msg;
+        errorBox.style.display = 'block';
+    }
+}
+
+// 6. Posts Controller (Featured Photo Aside + Clean Metadata Aside + PDF Down + New Search)
+function initPostController() {
+    const postUrlInput = document.getElementById('postUrl');
+    const pastePostBtn = document.getElementById('pastePostBtn');
+    const fetchPostBtn = document.getElementById('fetchPostBtn');
+    const postLoading = document.getElementById('postLoading');
+    const postProgressVal = document.getElementById('postProgressVal');
+    const postProgressFill = document.getElementById('postProgressFill');
+    const postProgressLabel = document.getElementById('postProgressLabel');
+    const postError = document.getElementById('postError');
+    const postResults = document.getElementById('postResults');
+
+    // Metadata fields
+    const featuredPostImg = document.getElementById('featuredPostImg');
+    const featuredCounterBadge = document.getElementById('featuredCounterBadge');
+    const postAuthorName = document.getElementById('postAuthorName');
+    const postAuthorHandle = document.getElementById('postAuthorHandle');
+    const postAvatarLetter = document.getElementById('postAvatarLetter');
+    const postDateVal = document.getElementById('postDateVal');
+    const postCountVal = document.getElementById('postCountVal');
+    const postCaption = document.getElementById('postCaption');
+    const galleryCountTag = document.getElementById('galleryCountTag');
+    const photosGrid = document.getElementById('photosGrid');
+    const makePdfBtn = document.getElementById('makePdfBtn');
+    const makeZipBtn = document.getElementById('makeZipBtn');
+    const resetPostBtn = document.getElementById('resetPostBtn');
+    const pdfStatusMsg = document.getElementById('pdfStatusMsg');
+
+    let currentPostId = null;
+    let currentPostData = null;
+
+    if (!fetchPostBtn) return;
+
+    if (pastePostBtn) {
+        pastePostBtn.addEventListener('click', async () => {
+            try {
+                const text = await navigator.clipboard.readText();
+                if (text) postUrlInput.value = text.trim();
+            } catch (e) {
+                postUrlInput.focus();
+            }
+        });
+    }
+
+    postUrlInput.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') fetchPostBtn.click();
+    });
+
+    fetchPostBtn.addEventListener('click', async () => {
+        const url = postUrlInput.value.trim();
+        if (!url) {
+            showPostError("Please enter an Instagram Post URL.");
+            return;
+        }
+
+        postError.style.display = 'none';
+        postResults.style.display = 'none';
+        postLoading.style.display = 'block';
+        pdfStatusMsg.style.display = 'none';
+        fetchPostBtn.disabled = true;
+
+        if (postProgressVal) postProgressVal.textContent = '0';
+        if (postProgressFill) postProgressFill.style.width = '0%';
+        if (postProgressLabel) postProgressLabel.textContent = 'Connecting to Instagram...';
+
+        let p = 0;
+        const interval = setInterval(() => {
+            if (p < 90) {
+                p += Math.floor(Math.random() * 6) + 3;
+                if (p > 90) p = 90;
+                if (postProgressVal) postProgressVal.textContent = p;
+                if (postProgressFill) postProgressFill.style.width = `${p}%`;
+
+                if (p < 30) {
+                    if (postProgressLabel) postProgressLabel.textContent = 'Connecting to Instagram server...';
+                } else if (p < 70) {
+                    if (postProgressLabel) postProgressLabel.textContent = 'Extracting uncompressed photos...';
+                } else {
+                    if (postProgressLabel) postProgressLabel.textContent = 'Preparing full-resolution assets...';
+                }
+            }
+        }, 110);
+
+        try {
+            const resp = await fetch('/api/download-post', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ url: url })
+            });
+            const data = await resp.json();
+            clearInterval(interval);
+
+            if (!resp.ok || !data.success) {
+                throw new Error(data.error || 'Failed to download post photos.');
+            }
+
+            if (postProgressVal) postProgressVal.textContent = '100';
+            if (postProgressFill) postProgressFill.style.width = '100%';
+            if (postProgressLabel) postProgressLabel.textContent = 'Photos extracted successfully!';
+            await new Promise(r => setTimeout(r, 220));
+
+            currentPostId = data.post_id;
+            currentPostData = data;
+            const count = data.image_count || data.images.length;
+
+            // Populate Clean Metadata Aside
+            const uploaderHandle = data.uploader || 'user';
+            const displayName = data.author || data.uploader || 'Instagram User';
+
+            postAuthorName.textContent = displayName;
+            postAuthorHandle.textContent = `@${uploaderHandle.replace(/^@/, '')}`;
+            postAvatarLetter.textContent = (uploaderHandle[0] || 'P').toUpperCase();
+            postDateVal.textContent = data.date || 'Recent';
+            postCountVal.textContent = `${count} ${count === 1 ? 'Photo' : 'Photos'}`;
+            if (postCaption) postCaption.textContent = data.caption || 'Instagram Post';
+            galleryCountTag.textContent = `${count} Photos`;
+
+            // Set Featured Preview Photo Aside
+            if (data.images && data.images.length > 0) {
+                featuredPostImg.src = `/preview/${encodeURIComponent(data.images[0].filename)}`;
+                featuredCounterBadge.textContent = `Photo 1 of ${count}`;
+            }
+
+            // Populate Photos Grid Drawer with custom named save buttons
+            photosGrid.innerHTML = '';
+            data.images.forEach((img, idx) => {
+                const item = document.createElement('div');
+                item.className = 'photo-item';
+                const previewUrl = `/preview/${encodeURIComponent(img.filename)}`;
+                
+                // Individual photo filename: SJ_accountname_postname_photoX_time.jpg
+                const accClean = sanitizeForFilename(uploaderHandle);
+                const postClean = sanitizeForFilename(data.shortcode || 'post');
+                const timeClean = getDownloadTimestamp();
+                const customPhotoName = `SJ_${accClean}_${postClean}_photo${img.index}_${timeClean}.jpg`;
+                const downloadUrl = `/download/${encodeURIComponent(img.filename)}?name=${encodeURIComponent(customPhotoName)}`;
+                
+                item.innerHTML = `
+                    <img src="${previewUrl}" alt="Photo ${img.index}">
+                    <a href="${downloadUrl}" download="${customPhotoName}">
+                        <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                            <polyline points="7 10 12 15 17 10"/>
+                            <line x1="12" x2="12" y1="15" y2="3"/>
+                        </svg>
+                        <span>Save</span>
+                    </a>
+                `;
+
+                // Clicking photo item swaps featured preview photo aside
+                item.addEventListener('click', (e) => {
+                    if (e.target.tagName !== 'A') {
+                        featuredPostImg.src = previewUrl;
+                        featuredCounterBadge.textContent = `Photo ${img.index} of ${count}`;
+                    }
+                });
+
+                photosGrid.appendChild(item);
+            });
+
+            postLoading.style.display = 'none';
+            postResults.style.display = 'flex';
+        } catch (err) {
+            clearInterval(interval);
+            postLoading.style.display = 'none';
+            showPostError(err.message || 'Error fetching post.');
+        } finally {
+            fetchPostBtn.disabled = false;
+        }
+    });
+
+    // Compile & Download PDF with custom filename: SJ_accountname_postname_time.pdf
+    makePdfBtn.addEventListener('click', async () => {
+        if (!currentPostId) return;
+        makePdfBtn.disabled = true;
+        pdfStatusMsg.style.display = 'block';
+        pdfStatusMsg.textContent = 'Compiling photos into PDF document...';
+
+        try {
+            const resp = await fetch('/api/make-pdf', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ post_id: currentPostId })
+            });
+            const data = await resp.json();
+            if (!resp.ok || !data.success) throw new Error(data.error || 'Failed to generate PDF.');
+
+            pdfStatusMsg.textContent = 'PDF ready! Starting download...';
+            
+            // Format: SJ_accountname_postname_downloaded_time.pdf
+            const uploaderHandle = (currentPostData && currentPostData.uploader) || 'account';
+            const shortcode = (currentPostData && currentPostData.shortcode) || 'post';
+            const accClean = sanitizeForFilename(uploaderHandle);
+            const postClean = sanitizeForFilename(shortcode);
+            const timeClean = getDownloadTimestamp();
+            const customPdfName = `SJ_${accClean}_${postClean}_${timeClean}.pdf`;
+
+            const link = document.createElement('a');
+            link.href = `/download/${encodeURIComponent(data.pdf_filename)}?name=${encodeURIComponent(customPdfName)}`;
+            link.setAttribute('download', customPdfName);
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            
+            setTimeout(() => {
+                pdfStatusMsg.textContent = 'PDF downloaded successfully!';
+            }, 1200);
+        } catch (e) {
+            pdfStatusMsg.textContent = `Error: ${e.message}`;
+        } finally {
+            makePdfBtn.disabled = false;
+        }
+    });
+
+    // Save ZIP with custom filename: SJ_accountname_postname_time.zip
+    makeZipBtn.addEventListener('click', async () => {
+        if (!currentPostId) return;
+        makeZipBtn.disabled = true;
+        pdfStatusMsg.style.display = 'block';
+        pdfStatusMsg.textContent = 'Archiving ZIP...';
+
+        try {
+            const resp = await fetch('/api/make-zip', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ post_id: currentPostId })
+            });
+            const data = await resp.json();
+            if (!resp.ok || !data.success) throw new Error(data.error || 'Failed to create ZIP.');
+
+            const uploaderHandle = (currentPostData && currentPostData.uploader) || 'account';
+            const shortcode = (currentPostData && currentPostData.shortcode) || 'post';
+            const accClean = sanitizeForFilename(uploaderHandle);
+            const postClean = sanitizeForFilename(shortcode);
+            const timeClean = getDownloadTimestamp();
+            const customZipName = `SJ_${accClean}_${postClean}_${timeClean}.zip`;
+
+            const link = document.createElement('a');
+            link.href = `/download/${encodeURIComponent(data.zip_filename)}?name=${encodeURIComponent(customZipName)}`;
+            link.setAttribute('download', customZipName);
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            
+            setTimeout(() => {
+                pdfStatusMsg.textContent = 'ZIP downloaded successfully!';
+            }, 1200);
+        } catch (e) {
+            pdfStatusMsg.textContent = `Error: ${e.message}`;
+        } finally {
+            makeZipBtn.disabled = false;
+        }
+    });
+
+    // New Search for Posts (as requested by user)
+    if (resetPostBtn) {
+        resetPostBtn.addEventListener('click', () => {
+            postResults.style.display = 'none';
+            postError.style.display = 'none';
+            postUrlInput.value = '';
+            currentPostId = null;
+            currentPostData = null;
+            postUrlInput.focus();
+        });
+    }
+
+    function showPostError(msg) {
+        postError.textContent = msg;
+        postError.style.display = 'block';
+    }
+}
+
+// 7. Initialize on Load
+document.addEventListener('DOMContentLoaded', () => {
+    initLiveClock();
+    initAppleDockMagnification();
+    initReelController();
+    initPostController();
+
+    // Check initial route to set correct active view and theme
+    const path = window.location.pathname;
+    if (path.includes('/reel')) {
+        switchView('reel', false);
+    } else if (path.includes('/post')) {
+        switchView('post', false);
+    } else {
+        switchView('intro', false);
+    }
+
+    // Attach Apple Dock buttons (Sole Navigation Controller)
+    const dockIntro = document.getElementById('dockIntro');
+    const dockReel = document.getElementById('dockReel');
+    const dockPost = document.getElementById('dockPost');
+
+    if (dockIntro) dockIntro.addEventListener('click', () => switchView('intro'));
+    if (dockReel) dockReel.addEventListener('click', () => switchView('reel'));
+    if (dockPost) dockPost.addEventListener('click', () => switchView('post'));
+
+    // Quick shifting buttons on Intro view
+    const shiftToReels = document.getElementById('shiftToReels');
+    const shiftToPosts = document.getElementById('shiftToPosts');
+    if (shiftToReels) shiftToReels.addEventListener('click', (e) => { e.preventDefault(); switchView('reel'); });
+    if (shiftToPosts) shiftToPosts.addEventListener('click', (e) => { e.preventDefault(); switchView('post'); });
+});
+
+    </script>
     <script src="/static/js/app.js"></script>
 </body>
 </html>

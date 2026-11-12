@@ -8,8 +8,23 @@ from instagram_downloader import (
 )
 from pdf_generator import convert_images_to_pdf
 
-app = Flask(__name__)
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+STATIC_DIR = os.path.join(BASE_DIR, "static")
+TEMPLATE_DIR = os.path.join(BASE_DIR, "templates")
+
+app = Flask(
+    __name__,
+    template_folder=TEMPLATE_DIR,
+    static_folder=STATIC_DIR,
+    static_url_path='/static'
+)
 app.config['MAX_CONTENT_LENGTH'] = 50 * 1024 * 1024  # 50 MB max request size
+
+@app.route('/static/<path:filename>')
+def serve_static_asset(filename):
+    """Direct route for static assets to prevent 404s in serverless environments."""
+    safe_name = os.path.basename(filename)
+    return send_from_directory(STATIC_DIR, filename)
 
 @app.route('/')
 def intro():

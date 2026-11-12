@@ -30,3 +30,4 @@ static/downloads/*
 .env
 .DS_Store
 Thumbs.db
+
