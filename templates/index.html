@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>Vinista — Instagram Media Studio</title>
+    <link rel="stylesheet" href="/static/css/app.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600;700&display=swap" rel="stylesheet">
+</head>
+<body class="theme-intro">
+    <!-- Header with Brand & Live Digital Clock (Single routing: Apple Dock at bottom) -->
+    <header class="app-header">
+        <div class="header-container">
+            <a href="/" class="brand-title" id="brandLink">
+                <span class="brand-logo-dot"></span>
+                <span>VINISTA</span>
+            </a>
+
+            <!-- Live Digital Clock -->
+            <div class="header-right">
+                <div class="live-clock">
+                    <span class="clock-dot"></span>
+                    <span id="clockHours">00</span>:<span id="clockMinutes">00</span>:<span id="clockSeconds">00</span>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Views Container (100dvh Fit, Ultra-Smooth Shifting) -->
+    <main class="views-wrapper">
+        
+        <!-- ============================================================
+             1. INTRO VIEW: Midnight Black (#070709) + Pure White (#FFFFFF) + Vibrant Golden Yellow (#FFB800)
+             ============================================================ -->
+        <section id="viewIntro" class="view-panel active">
+            <div class="panel-content">
+                <div class="intro-badge">
+                    <span class="intro-badge-pulse"></span>
+                    <span>Zero Login • Direct Media Extraction</span>
+                </div>
+                
+                <h1 class="intro-title">
+                    Instagram Reels <br><span class="highlight-gold">& Posts Studio</span>
+                </h1>
+                
+                <p class="intro-subtitle">
+                    Fast uncompressed extraction for public Instagram Reels and automated carousel-to-PDF compilation.
+                </p>
+
+                <!-- Clean Page Shifting Actions -->
+                <div class="intro-shift-actions">
+                    <button type="button" class="btn-shift btn-shift-gold" id="shiftToReels">
+                        <span>Reels Downloader</span>
+                        <svg class="btn-arrow-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+                    </button>
+                    <button type="button" class="btn-shift btn-shift-outline" id="shiftToPosts">
+                        <span>Posts Downloader</span>
+                        <svg class="btn-arrow-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- ============================================================
+             2. REELS VIEW: Retro Violet (#190133) + Flame (#FF4500) + Pale Yellow (#FFF3B0) + Neon Cyan (#00F0FF)
+             ============================================================ -->
+        <section id="viewReel" class="view-panel">
+            <div class="panel-content panel-content-wide">
+                <div class="reel-badge-pill">
+                    <span class="reel-dot"></span>
+                    <span>HD 1080p MP4</span>
+                </div>
+
+                <h2 class="reel-title-sm">
+                    Instagram <span class="highlight-flame">Reels</span> Downloader
+                </h2>
+                <p class="reel-desc-sm">
+                    Enter any public Instagram Reel URL for direct video stream download.
+                </p>
+
+                <!-- Compact Search Box -->
+                <div class="search-box-reel">
+                    <input type="text" id="reelUrl" placeholder="Paste Reel link here..." autocomplete="off">
+                    <button type="button" id="pasteBtn" class="btn-paste-sm">Paste</button>
+                    <button type="button" id="grabBtn" class="btn-grab-reel">
+                        <span>Download</span>
+                    </button>
+                </div>
+
+                <!-- Error Box -->
+                <div id="reelError" class="error-msg-box" style="display: none;"></div>
+
+                <!-- High-Tech Animated Extraction HUD -->
+                <div id="reelLoading" class="extraction-hud" style="display: none;">
+                    <div class="radar-spinner">
+                        <div class="radar-circle"></div>
+                        <div class="radar-sweep"></div>
+                    </div>
+                    <div class="progress-pct">
+                        <span id="reelProgressVal">0</span>%
+                    </div>
+                    <div class="progress-track-sm">
+                        <div id="reelProgressFill" class="progress-bar-sm"></div>
+                    </div>
+                    <p id="reelProgressStatus" class="progress-status-sm">Connecting to Instagram...</p>
+                </div>
+
+                <!-- Two-Part Reel Result Layout (Large Autoplay Video Aside + Separated Caption/Meta Aside + Download Down) -->
+                <div id="reelResult" class="media-result-container" style="display: none;">
+                    <div class="result-layout-two-parts">
+                        <!-- Part 1: Large Autoplay Reel Video Aside (Left) -->
+                        <div class="result-media-aside">
+                            <div class="video-preview-wrapper-lg">
+                                <video id="videoPlayer" autoplay muted loop playsinline controls preload="auto"></video>
+                                <span class="live-playback-pill">● Playing</span>
+                            </div>
+                        </div>
+
+                        <!-- Part 2: Clean Metadata Aside (Right) -->
+                        <div class="result-meta-aside">
+                            <!-- Top Identity Row -->
+                            <div class="meta-header-row">
+                                <div class="account-identity">
+                                    <span class="account-avatar-placeholder" id="accountAvatarLetter">@</span>
+                                    <div class="account-names">
+                                        <h4 id="authorName" class="account-display-name">Creator</h4>
+                                        <span id="authorHandle" class="account-handle-badge">@user</span>
+                                    </div>
+                                </div>
+                                <span class="meta-pill-quality" id="reelQualityTag">1080p MP4</span>
+                            </div>
+
+                            <!-- Meta Info Specs Strip -->
+                            <div class="meta-specs-strip">
+                                <div class="spec-item">
+                                    <span class="spec-label">Published</span>
+                                    <span class="spec-value" id="reelDateVal">Recently</span>
+                                </div>
+                                <div class="spec-item">
+                                    <span class="spec-label">Format</span>
+                                    <span class="spec-value">1080p MP4</span>
+                                </div>
+                                <div class="spec-item">
+                                    <span class="spec-label">Stream</span>
+                                    <span class="spec-value">Direct Video</span>
+                                </div>
+                            </div>
+
+                            <!-- Download Option DOWN with good animation -->
+                            <div class="result-download-down">
+                                <a id="downloadBtn" href="#" class="btn-animated-download btn-download-primary" download>
+                                    <svg class="download-bounce-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+                                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                                        <polyline points="7 10 12 15 17 10"/>
+                                        <line x1="12" x2="12" y1="15" y2="3"/>
+                                    </svg>
+                                    <span>Save 1080p MP4</span>
+                                </a>
+                                <button type="button" id="resetBtn" class="btn-action-outline">New Search</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ============================================================
+             3. POSTS VIEW: Royal Blue (#014BAA) + Light Cream (#F8F3F0) + Vibrant Amber (#FFB800)
+             ============================================================ -->
+        <section id="viewPost" class="view-panel">
+            <div class="panel-content panel-content-wide">
+                <div class="post-badge-pill">
+                    <span class="post-dot"></span>
+                    <span>Carousels & PDF Export</span>
+                </div>
+
+                <h2 class="post-title-sm">
+                    Instagram <span class="highlight-cream">Posts</span> Downloader
+                </h2>
+                <p class="post-desc-sm">
+                    Extract high-resolution carousel photos with one-click PDF document compilation.
+                </p>
+
+                <!-- Compact Search Box -->
+                <div class="search-box-post">
+                    <input type="text" id="postUrl" placeholder="Paste Instagram Post or Carousel link..." autocomplete="off">
+                    <button type="button" id="pastePostBtn" class="btn-paste-post">Paste</button>
+                    <button type="button" id="fetchPostBtn" class="btn-fetch-post">
+                        <span>Fetch</span>
+                    </button>
+                </div>
+
+                <!-- Error Box -->
+                <div id="postError" class="error-msg-box" style="display: none;"></div>
+
+                <!-- High-Tech Animated Extraction HUD -->
+                <div id="postLoading" class="extraction-hud" style="display: none;">
+                    <div class="radar-spinner">
+                        <div class="radar-circle"></div>
+                        <div class="radar-sweep"></div>
+                    </div>
+                    <div class="progress-pct">
+                        <span id="postProgressVal">0</span>%
+                    </div>
+                    <div class="progress-track-sm">
+                        <div id="postProgressFill" class="progress-bar-sm"></div>
+                    </div>
+                    <p id="postProgressLabel" class="progress-status-sm">Extracting photos...</p>
+                </div>
+
+                <!-- Two-Part Post Result Layout (Photo Preview Aside + Separated Caption/Meta Aside + PDF Down + New Search) -->
+                <div id="postResults" class="media-result-container" style="display: none;">
+                    <div class="result-layout-two-parts">
+                        <!-- Part 1: Featured Photo Preview Aside (Left) -->
+                        <div class="result-media-aside">
+                            <div class="photo-featured-wrapper-lg">
+                                <img id="featuredPostImg" src="" alt="Featured Post Photo">
+                                <span class="photo-counter-badge" id="featuredCounterBadge">Photo 1</span>
+                            </div>
+                        </div>
+
+                        <!-- Part 2: Clean Metadata Aside (Right) -->
+                        <div class="result-meta-aside">
+                            <!-- Top Identity Row -->
+                            <div class="meta-header-row">
+                                <div class="account-identity">
+                                    <span class="account-avatar-placeholder" id="postAvatarLetter">@</span>
+                                    <div class="account-names">
+                                        <h4 id="postAuthorName" class="account-display-name">Author</h4>
+                                        <span id="postAuthorHandle" class="account-handle-badge">@user</span>
+                                    </div>
+                                </div>
+                                <span class="meta-pill-quality" id="postQualityTag">High-Res</span>
+                            </div>
+
+                            <!-- Meta Info Specs Strip -->
+                            <div class="meta-specs-strip">
+                                <div class="spec-item">
+                                    <span class="spec-label">Published</span>
+                                    <span class="spec-value" id="postDateVal">Recently</span>
+                                </div>
+                                <div class="spec-item">
+                                    <span class="spec-label">Carousel Size</span>
+                                    <span class="spec-value" id="postCountVal">Photos</span>
+                                </div>
+                                <div class="spec-item">
+                                    <span class="spec-label">Document</span>
+                                    <span class="spec-value">Print Ready</span>
+                                </div>
+                            </div>
+
+                            <!-- Download Options DOWN with New Search Button -->
+                            <div class="result-download-down">
+                                <button type="button" id="makePdfBtn" class="btn-animated-download btn-download-primary">
+                                    <svg class="download-bounce-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+                                        <path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"/>
+                                        <polyline points="14 2 14 8 20 8"/>
+                                        <line x1="12" x2="12" y1="18" y2="12"/>
+                                        <polyline points="9 15 12 18 15 15"/>
+                                    </svg>
+                                    <span>Compile & Download PDF</span>
+                                </button>
+                                <button type="button" id="makeZipBtn" class="btn-action-outline">Save ZIP</button>
+                                <button type="button" id="resetPostBtn" class="btn-action-outline">New Search</button>
+                            </div>
+                            <div id="pdfStatusMsg" class="progress-status-sm" style="display: none;"></div>
+                        </div>
+                    </div>
+
+                    <!-- Scrollable Drawer for Individual Photos below -->
+                    <div class="gallery-drawer-wrap">
+                        <div class="gallery-drawer-title">
+                            <span>Carousel Slides (Click to Preview)</span>
+                            <span id="galleryCountTag">All Photos</span>
+                        </div>
+                        <div class="gallery-drawer">
+                            <div id="photosGrid" class="photos-grid-compact"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- ============================================================
+         APPLE-STYLE DOCK (Refined Compact Sizing, Smooth Hover)
+         ============================================================ -->
+    <div class="apple-dock-wrapper" id="dockWrapper">
+        <nav class="apple-dock" id="appleDock" aria-label="Navigation Dock">
+            <!-- 1. Intro -->
+            <button type="button" class="dock-item active" data-view="intro" id="dockIntro" aria-label="Intro">
+                <span class="dock-label">Intro</span>
+                <span class="dock-icon">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
+                        <polyline points="9 22 9 12 15 12 15 22"/>
+                    </svg>
+                </span>
+                <span class="dock-dot"></span>
+            </button>
+
+            <!-- 2. Reels -->
+            <button type="button" class="dock-item" data-view="reel" id="dockReel" aria-label="Reels">
+                <span class="dock-label">Reels</span>
+                <span class="dock-icon">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <rect width="18" height="18" x="3" y="3" rx="2"/>
+                        <path d="m9 8 7 4-7 4Z"/>
+                    </svg>
+                </span>
+                <span class="dock-dot"></span>
+            </button>
+
+            <!-- 3. Posts (with integrated PDF compilation) -->
+            <button type="button" class="dock-item" data-view="post" id="dockPost" aria-label="Posts">
+                <span class="dock-label">Posts</span>
+                <span class="dock-icon">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <rect width="18" height="18" x="3" y="3" rx="2"/>
+                        <circle cx="8.5" cy="8.5" r="1.5"/>
+                        <path d="m21 15-5-5L5 21"/>
+                    </svg>
+                </span>
+                <span class="dock-dot"></span>
+            </button>
+        </nav>
+    </div>
+
+    <script src="/static/js/app.js"></script>
+</body>
+</html>

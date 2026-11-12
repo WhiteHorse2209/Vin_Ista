@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vinista — Instagram Media Studio</title>
+    <link rel="stylesheet" href="/static/css/intro.css">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body>
+    <header class="navbar">
+        <div class="nav-container">
+            <a href="/" class="brand-logo">
+                <div class="logo-mark">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
+                    </svg>
+                </div>
+                <span class="logo-text">VINISTA</span>
+            </a>
+
+            <!-- Right Nav: Live Clock & Studio Link (Reels portal button removed as requested) -->
+            <div class="nav-right">
+                <div class="live-clock-badge">
+                    <span class="clock-dot"></span>
+                    <div class="clock-digits">
+                        <span id="clockHours">00</span>
+                        <span>:</span>
+                        <span id="clockMinutes">00</span>
+                        <span>:</span>
+                        <span id="clockSeconds">00</span>
+                    </div>
+                </div>
+                <a href="/post" class="nav-btn nav-btn-cyan">Posts & PDF Studio</a>
+            </div>
+        </div>
+    </header>
+
+    <main class="hero-section">
+        <div class="hero-container">
+            <div class="badge-pill">
+                <span class="badge-dot"></span>
+                <span>Zero Login • High Speed • Private Extraction</span>
+            </div>
+            
+            <h1 class="hero-title">
+                Instagram Media <span class="highlight-cyan">& PDF Studio</span>
+            </h1>
+            
+            <p class="hero-subtitle">
+                Professional toolkit to download 1080p Instagram Reels and convert carousel posts into structured PDF documents.
+            </p>
+
+            <!-- Two Simplified Professional Cards -->
+            <div class="tools-grid">
+                <!-- Card 1: Reels Downloader -->
+                <div class="tool-card card-reels">
+                    <div class="card-icon-box">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <polygon points="23 7 16 12 23 17 23 7"></polygon>
+                            <rect x="1" y="5" width="15" height="14" rx="2" ry="2"></rect>
+                        </svg>
+                    </div>
+                    <div class="card-content">
+                        <h2 class="card-title">Reels Downloader</h2>
+                        <p class="card-desc">Download HD 1080p MP4 videos with in-browser player preview.</p>
+                    </div>
+                    <a href="/reel" class="card-action-btn btn-action-reels">
+                        <span>Launch Downloader</span>
+                        <svg viewBox="0 0 20 20" fill="currentColor">
+                            <path fill-rule="evenodd" d="M12.293 5.293a1 1 0 011.414 0l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-2.293-2.293a1 1 0 010-1.414z" clip-rule="evenodd"/>
+                        </svg>
+                    </a>
+                </div>
+
+                <!-- Card 2: Posts & PDF Studio -->
+                <div class="tool-card card-posts">
+                    <div class="card-icon-box icon-cyan">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                            <polyline points="14 2 14 8 20 8"></polyline>
+                            <line x1="16" y1="13" x2="8" y2="13"></line>
+                            <line x1="16" y1="17" x2="8" y2="17"></line>
+                        </svg>
+                    </div>
+                    <div class="card-content">
+                        <h2 class="card-title">Posts & PDF Studio</h2>
+                        <p class="card-desc">Extract carousel photos and compile full posts into a clean PDF.</p>
+                    </div>
+                    <a href="/post" class="card-action-btn btn-action-posts">
+                        <span>Launch Studio</span>
+                        <svg viewBox="0 0 20 20" fill="currentColor">
+                            <path fill-rule="evenodd" d="M12.293 5.293a1 1 0 011.414 0l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-2.293-2.293a1 1 0 010-1.414z" clip-rule="evenodd"/>
+                        </svg>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <p>© Vinista • Jet Black, Royal Amethyst & Electric Cyan Architecture</p>
+    </footer>
+
+    <script src="/static/js/core-ui.js"></script>
+</body>
+</html>

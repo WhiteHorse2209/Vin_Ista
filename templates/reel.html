@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Instagram Reels Downloader — Vinista</title>
+    <link rel="stylesheet" href="/static/css/reel.css">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body>
+    <header class="reel-nav">
+        <div class="reel-nav-container">
+            <a href="/" class="brand-logo">
+                <div class="logo-mark">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                        <polygon points="23 7 16 12 23 17 23 7"></polygon>
+                        <rect x="1" y="5" width="15" height="14" rx="2" ry="2"></rect>
+                    </svg>
+                </div>
+                <span class="logo-text">REELS DOWNLOADER</span>
+            </a>
+
+            <div class="nav-right">
+                <div class="live-clock-badge">
+                    <span class="clock-dot"></span>
+                    <div class="clock-digits">
+                        <span id="clockHours">00</span>
+                        <span>:</span>
+                        <span id="clockMinutes">00</span>
+                        <span>:</span>
+                        <span id="clockSeconds">00</span>
+                    </div>
+                </div>
+                <a href="/" class="nav-btn nav-btn-outline">Home</a>
+                <a href="/post" class="nav-btn nav-btn-primary">Posts & PDF</a>
+            </div>
+        </div>
+    </header>
+
+    <main class="reel-main">
+        <div class="reel-container">
+            <!-- Compact Title -->
+            <div class="reel-header">
+                <h1 class="reel-title">
+                    Download Instagram <span class="highlight">Reel</span>
+                </h1>
+                <p class="reel-subtitle">
+                    Paste any public Instagram reel link for direct 1080p MP4 download.
+                </p>
+            </div>
+
+            <!-- Compact Input Box -->
+            <div class="search-card">
+                <div class="input-row">
+                    <div class="input-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path>
+                            <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path>
+                        </svg>
+                    </div>
+                    <input type="text" id="reelUrl" placeholder="Paste Instagram Reel link here..." autocomplete="off">
+                    <button type="button" id="pasteBtn" class="btn-paste">
+                        <span>Paste</span>
+                    </button>
+                    <button type="button" id="grabBtn" class="btn-grab">
+                        <span>Download</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Compact Progress Counter -->
+            <div id="loadingState" class="progress-box" style="display: none;">
+                <div class="counter-value-row">
+                    <span id="progressValue">0</span><span class="counter-percent">%</span>
+                </div>
+                <div class="progress-track">
+                    <div id="progressBarFill" class="progress-bar-fill"></div>
+                </div>
+                <p id="progressStatusLabel" class="progress-status-label">Extracting video stream...</p>
+            </div>
+
+            <!-- Error Banner -->
+            <div id="errorState" class="error-banner" style="display: none;">
+                <div class="error-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="10"></circle>
+                        <line x1="12" y1="8" x2="12" y2="12"></line>
+                        <line x1="12" y1="16" x2="12.01" y2="16"></line>
+                    </svg>
+                </div>
+                <div class="error-content">
+                    <p id="errorMessage">Unable to fetch reel. Verify that the link is public.</p>
+                </div>
+            </div>
+
+            <!-- Compact Video Result Card (Fits Viewport) -->
+            <div id="resultCard" class="result-card" style="display: none;">
+                <div class="result-flex">
+                    <div class="video-wrapper">
+                        <video id="videoPlayer" controls playsinline preload="metadata">
+                            Your browser does not support HTML5 video.
+                        </video>
+                    </div>
+
+                    <div class="result-details">
+                        <div class="meta-tags">
+                            <span id="authorTag" class="author-tag">@author</span>
+                            <span id="durationPill" class="duration-pill">0:00</span>
+                        </div>
+                        <h3 id="videoTitle" class="video-title">Instagram Reel Title</h3>
+
+                        <div class="action-buttons">
+                            <a id="downloadBtn" href="#" class="btn-download-mp4" download>
+                                <svg viewBox="0 0 20 20" fill="currentColor">
+                                    <path fill-rule="evenodd" d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm3.293-7.707a1 1 0 011.414 0L9 10.586V3a1 1 0 112 0v7.586l1.293-1.293a1 1 0 111.414 1.414l-3 3a1 1 0 01-1.414 0l-3-3a1 1 0 010-1.414z" clip-rule="evenodd"/>
+                                </svg>
+                                <span>Save Video (.mp4)</span>
+                            </a>
+                            <button type="button" id="resetBtn" class="btn-reset">
+                                <span>Download Another</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer class="reel-footer">
+        <p>© Vinista • High Definition Reel Extraction</p>
+    </footer>
+
+    <script src="/static/js/core-ui.js"></script>
+    <script src="/static/js/reel.js"></script>
+</body>
+</html>

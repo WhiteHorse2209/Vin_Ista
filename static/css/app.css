@@ -1,0 +1,1240 @@
+/* ==========================================================================
+   VINISTA — PRODUCTION STYLING (TWO-PARTS SIDE-BY-SIDE METADATA + COMPACT DOCK)
+   ========================================================================== */
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+    /* Strict Rule: Absolutely no text blur, blush or glow halos */
+    text-shadow: none !important;
+    filter: none !important;
+}
+
+:root {
+    --ease-out-spring: cubic-bezier(0.16, 1, 0.3, 1);
+    
+    /* Intro Palette: Midnight Black + Pure White + Vibrant Golden Yellow */
+    --midnight: #070709;
+    --white: #FFFFFF;
+    --gold: #FFB800;
+    --gold-hover: #FFC72C;
+
+    /* Reels Palette: Retro Violet + Flame + Pale Yellow + Neon Cyan */
+    --violet-bg: #190133;
+    --flame: #FF4500;
+    --flame-hover: #E03D00;
+    --pale-yellow: #FFF3B0;
+    --neon-cyan: #00F0FF;
+
+    /* Posts Palette: Royal Blue + Light Cream + Amber Gold */
+    --royal-blue: #014BAA;
+    --cream: #F8F3F0;
+    --amber-gold: #FFB800;
+}
+
+html, body {
+    height: 100%;
+    min-height: 100vh;
+    min-height: 100dvh;
+    max-height: 100dvh;
+    overflow: hidden; /* Fits strictly to page on every route */
+    font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+
+body {
+    display: flex;
+    flex-direction: column;
+    transition: background-color 0.4s var(--ease-out-spring), color 0.3s ease;
+    background-color: var(--midnight);
+    color: var(--white);
+}
+
+/* ==========================================================================
+   THEME PALETTES PER ROUTE
+   ========================================================================== */
+
+/* 1. Intro Theme */
+body.theme-intro {
+    background-color: var(--midnight);
+    color: var(--white);
+}
+
+/* 2. Reels Theme: Retro Violet + Flame + Pale Yellow + Neon Cyan */
+body.theme-reel {
+    background-color: var(--violet-bg);
+    color: var(--pale-yellow);
+}
+
+/* 3. Posts Theme: Royal Blue + Light Cream + Amber Gold */
+body.theme-post {
+    background-color: var(--royal-blue);
+    color: var(--cream);
+}
+
+/* ============================================================
+   HEADER & LIVE CLOCK (Single Routing: Header is clean with Clock only)
+   ============================================================ */
+
+.app-header {
+    height: 52px;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    padding: 0 1.25rem;
+    background: rgba(0, 0, 0, 0.28);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    z-index: 100;
+}
+
+.header-container {
+    max-width: 1080px;
+    width: 100%;
+    margin: 0 auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.brand-title {
+    font-size: 1.15rem;
+    font-weight: 800;
+    letter-spacing: 1px;
+    text-decoration: none;
+    color: inherit;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.brand-logo-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--gold);
+    display: inline-block;
+    transition: background 0.3s ease;
+}
+
+body.theme-reel .brand-logo-dot {
+    background: var(--neon-cyan);
+}
+
+body.theme-post .brand-logo-dot {
+    background: var(--amber-gold);
+}
+
+/* Header Live Digital Clock */
+.header-right {
+    display: flex;
+    align-items: center;
+}
+
+.live-clock {
+    font-family: 'JetBrains Mono', ui-monospace, monospace;
+    font-size: 0.8rem;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    padding: 0.28rem 0.7rem;
+    border-radius: 9999px;
+    border: 1px solid rgba(255, 255, 255, 0.14);
+    background: rgba(255, 255, 255, 0.06);
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+}
+
+.clock-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: #10B981;
+    display: inline-block;
+}
+
+/* ============================================================
+   VIEWS WRAPPER (100dvh Fit, Ultra-Smooth Spring Transitions)
+   ============================================================ */
+
+.views-wrapper {
+    flex: 1;
+    position: relative;
+    width: 100%;
+    max-width: 1080px;
+    margin: 0 auto;
+    overflow: hidden;
+    padding-bottom: 70px; /* Space for Compact Apple Dock */
+}
+
+.view-panel {
+    position: absolute;
+    inset: 0;
+    bottom: 70px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 0.75rem 1.25rem;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(14px) scale(0.985);
+    transition: opacity 0.35s var(--ease-out-spring),
+                transform 0.35s var(--ease-out-spring),
+                visibility 0.35s;
+    pointer-events: none;
+}
+
+.view-panel.active {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0) scale(1);
+    pointer-events: auto;
+}
+
+.panel-content {
+    width: 100%;
+    max-width: 620px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    margin: auto 0;
+}
+
+.panel-content-wide {
+    max-width: 780px;
+}
+
+/* ============================================================
+   1. INTRO VIEW STYLES
+   ============================================================ */
+
+.intro-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.35rem 0.9rem;
+    border-radius: 9999px;
+    background: rgba(255, 184, 0, 0.09);
+    border: 1px solid rgba(255, 184, 0, 0.32);
+    font-size: 0.78rem;
+    font-weight: 700;
+    letter-spacing: 0.4px;
+    color: var(--gold);
+    margin-bottom: 1.25rem;
+}
+
+.intro-badge-pulse {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--gold);
+    display: inline-block;
+}
+
+.intro-title {
+    font-size: 2.85rem;
+    font-weight: 800;
+    line-height: 1.1;
+    letter-spacing: -1px;
+    margin-bottom: 0.85rem;
+    color: var(--white);
+}
+
+.highlight-gold {
+    color: var(--gold);
+}
+
+.intro-subtitle {
+    font-size: 1rem;
+    line-height: 1.5;
+    color: rgba(255, 255, 255, 0.72);
+    margin-bottom: 1.7rem;
+    max-width: 480px;
+    font-weight: 400;
+}
+
+.intro-shift-actions {
+    display: flex;
+    gap: 0.85rem;
+    width: 100%;
+    max-width: 440px;
+    justify-content: center;
+}
+
+.btn-shift {
+    flex: 1;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    padding: 0.72rem 1.15rem;
+    border-radius: 12px;
+    font-family: inherit;
+    font-size: 0.9rem;
+    font-weight: 700;
+    cursor: pointer;
+    text-decoration: none;
+    transition: transform 0.2s ease, background 0.2s ease, border-color 0.2s ease, color 0.2s ease;
+    white-space: nowrap;
+}
+
+.btn-shift:hover {
+    transform: translateY(-2px);
+}
+
+.btn-shift:hover .btn-arrow-icon {
+    transform: translateX(3px);
+}
+
+.btn-arrow-icon {
+    transition: transform 0.2s ease;
+}
+
+.btn-shift-gold {
+    background: var(--gold);
+    color: var(--midnight);
+    border: none;
+}
+
+.btn-shift-gold:hover {
+    background: var(--gold-hover);
+}
+
+.btn-shift-outline {
+    background: rgba(255, 255, 255, 0.05);
+    color: var(--white);
+    border: 1px solid rgba(255, 255, 255, 0.22);
+}
+
+.btn-shift-outline:hover {
+    border-color: var(--gold);
+    color: var(--gold);
+    background: rgba(255, 184, 0, 0.08);
+}
+
+/* ============================================================
+   2. REELS VIEW HEADER
+   ============================================================ */
+
+.reel-badge-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+    padding: 0.22rem 0.7rem;
+    border-radius: 9999px;
+    background: rgba(0, 240, 255, 0.1);
+    border: 1px solid rgba(0, 240, 255, 0.35);
+    color: var(--neon-cyan);
+    font-size: 0.72rem;
+    font-weight: 700;
+    margin-bottom: 0.45rem;
+}
+
+.reel-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--neon-cyan);
+}
+
+.reel-title-sm {
+    font-size: 1.7rem;
+    font-weight: 800;
+    letter-spacing: -0.5px;
+    margin-bottom: 0.25rem;
+    color: var(--pale-yellow);
+}
+
+.highlight-flame {
+    color: var(--flame);
+}
+
+.reel-desc-sm {
+    font-size: 0.82rem;
+    color: rgba(255, 243, 176, 0.8);
+    margin-bottom: 0.8rem;
+    font-weight: 500;
+}
+
+.search-box-reel {
+    display: flex;
+    width: 100%;
+    max-width: 500px;
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    border-radius: 12px;
+    padding: 3px;
+    gap: 4px;
+    margin-bottom: 0.55rem;
+}
+
+.search-box-reel input {
+    flex: 1;
+    background: transparent;
+    border: none;
+    outline: none;
+    padding: 0.52rem 0.75rem;
+    color: var(--pale-yellow);
+    font-family: inherit;
+    font-size: 0.88rem;
+}
+
+.search-box-reel input::placeholder {
+    color: rgba(255, 243, 176, 0.45);
+}
+
+.btn-paste-sm {
+    background: rgba(255, 255, 255, 0.12);
+    border: none;
+    color: var(--pale-yellow);
+    padding: 0 0.8rem;
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 0.78rem;
+    cursor: pointer;
+    transition: background 0.2s ease;
+}
+
+.btn-paste-sm:hover {
+    background: rgba(255, 255, 255, 0.2);
+}
+
+.btn-grab-reel {
+    background: var(--flame);
+    border: none;
+    color: #FFFFFF;
+    padding: 0 1.15rem;
+    border-radius: 8px;
+    font-weight: 700;
+    font-size: 0.84rem;
+    cursor: pointer;
+    transition: background 0.2s ease, transform 0.15s ease;
+}
+
+.btn-grab-reel:hover {
+    background: var(--flame-hover);
+    transform: translateY(-1px);
+}
+
+/* ============================================================
+   3. POSTS VIEW HEADER
+   ============================================================ */
+
+.post-badge-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+    padding: 0.22rem 0.7rem;
+    border-radius: 9999px;
+    background: rgba(255, 184, 0, 0.12);
+    border: 1px solid rgba(255, 184, 0, 0.38);
+    color: var(--amber-gold);
+    font-size: 0.72rem;
+    font-weight: 700;
+    margin-bottom: 0.45rem;
+}
+
+.post-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--amber-gold);
+}
+
+.post-title-sm {
+    font-size: 1.7rem;
+    font-weight: 800;
+    letter-spacing: -0.5px;
+    margin-bottom: 0.25rem;
+    color: var(--cream);
+}
+
+.highlight-cream {
+    color: var(--cream);
+}
+
+.post-desc-sm {
+    font-size: 0.82rem;
+    color: rgba(248, 243, 240, 0.85);
+    margin-bottom: 0.8rem;
+    font-weight: 500;
+}
+
+.search-box-post {
+    display: flex;
+    width: 100%;
+    max-width: 500px;
+    background: rgba(255, 255, 255, 0.12);
+    border: 1px solid rgba(255, 255, 255, 0.22);
+    border-radius: 12px;
+    padding: 3px;
+    gap: 4px;
+    margin-bottom: 0.55rem;
+}
+
+.search-box-post input {
+    flex: 1;
+    background: transparent;
+    border: none;
+    outline: none;
+    padding: 0.52rem 0.75rem;
+    color: var(--cream);
+    font-family: inherit;
+    font-size: 0.88rem;
+}
+
+.search-box-post input::placeholder {
+    color: rgba(248, 243, 240, 0.5);
+}
+
+.btn-paste-post {
+    background: rgba(255, 255, 255, 0.15);
+    border: none;
+    color: var(--cream);
+    padding: 0 0.8rem;
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 0.78rem;
+    cursor: pointer;
+    transition: background 0.2s ease;
+}
+
+.btn-paste-post:hover {
+    background: rgba(255, 255, 255, 0.25);
+}
+
+.btn-fetch-post {
+    background: var(--cream);
+    border: none;
+    color: var(--royal-blue);
+    padding: 0 1.15rem;
+    border-radius: 8px;
+    font-weight: 700;
+    font-size: 0.84rem;
+    cursor: pointer;
+    transition: background 0.2s ease, transform 0.15s ease;
+}
+
+.btn-fetch-post:hover {
+    background: #FFFFFF;
+    transform: translateY(-1px);
+}
+
+/* ============================================================
+   TWO-PARTS SIDE-BY-SIDE MEDIA RESULT CARD
+   ============================================================ */
+
+.media-result-container {
+    width: 100%;
+    max-width: 760px; /* Generous width for large video + airy metadata */
+    background: rgba(0, 0, 0, 0.44);
+    border: 1px solid rgba(255, 255, 255, 0.16);
+    border-radius: 16px;
+    padding: 1.1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.85rem;
+    margin-top: 0.35rem;
+    animation: entranceSpring 0.4s var(--ease-out-spring) forwards;
+}
+
+.result-layout-two-parts {
+    display: grid;
+    grid-template-columns: 240px 1fr; /* 240px large video, remaining for airy metadata */
+    gap: 1.25rem;
+    align-items: stretch;
+}
+
+/* Part 1: Media Preview Aside (Left) - Autoplay Reel & Featured Photo Made Bigger */
+.result-media-aside {
+    display: flex;
+    flex-direction: column;
+}
+
+.video-preview-wrapper-lg,
+.photo-featured-wrapper-lg {
+    position: relative;
+    width: 100%;
+    height: 310px; /* Big, tall, authentic vertical format */
+    background: #000000;
+    border-radius: 12px;
+    overflow: hidden;
+    border: 1px solid rgba(255, 255, 255, 0.14);
+    box-shadow: 0 10px 28px rgba(0, 0, 0, 0.5);
+}
+
+.video-preview-wrapper-lg video {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.photo-featured-wrapper-lg img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.live-playback-pill,
+.photo-counter-badge {
+    position: absolute;
+    top: 8px;
+    left: 8px;
+    font-size: 0.65rem;
+    font-weight: 700;
+    padding: 2px 8px;
+    border-radius: 9999px;
+    background: rgba(0, 0, 0, 0.72);
+    backdrop-filter: blur(8px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    color: #10B981;
+}
+
+.photo-counter-badge {
+    color: var(--white);
+}
+
+/* Part 2: Metadata Details Aside (Right) - Clean, Un-cramped Layout */
+.result-meta-aside {
+    display: flex;
+    flex-direction: column;
+    text-align: left;
+    min-width: 0; /* Prevents text overflow */
+}
+
+.meta-header-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 0.65rem;
+}
+
+.account-identity {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    min-width: 0;
+}
+
+.account-avatar-placeholder {
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.12);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.85rem;
+    font-weight: 800;
+    flex-shrink: 0;
+}
+
+body.theme-reel .account-avatar-placeholder {
+    color: var(--flame);
+    border-color: rgba(255, 69, 0, 0.4);
+}
+
+body.theme-post .account-avatar-placeholder {
+    color: var(--amber-gold);
+    border-color: rgba(255, 184, 0, 0.4);
+}
+
+.account-names {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+}
+
+.account-display-name {
+    font-size: 0.92rem;
+    font-weight: 700;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    color: var(--white);
+}
+
+body.theme-reel .account-display-name {
+    color: var(--pale-yellow);
+}
+
+body.theme-post .account-display-name {
+    color: var(--cream);
+}
+
+.account-handle-badge {
+    font-size: 0.74rem;
+    font-weight: 600;
+    opacity: 0.75;
+}
+
+.meta-pill-quality {
+    font-size: 0.68rem;
+    font-weight: 700;
+    padding: 2px 8px;
+    border-radius: 9999px;
+    white-space: nowrap;
+    flex-shrink: 0;
+}
+
+body.theme-reel .meta-pill-quality {
+    background: rgba(0, 240, 255, 0.12);
+    border: 1px solid rgba(0, 240, 255, 0.35);
+    color: var(--neon-cyan);
+}
+
+body.theme-post .meta-pill-quality {
+    background: rgba(255, 184, 0, 0.12);
+    border: 1px solid rgba(255, 184, 0, 0.35);
+    color: var(--amber-gold);
+}
+
+/* Dedicated Airy Caption Card Aside (NOT squeezed/merged!) */
+.meta-caption-card {
+    background: rgba(0, 0, 0, 0.32);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 10px;
+    padding: 0.65rem 0.85rem;
+    margin-bottom: 0.65rem;
+    flex: 1; /* Occupies generous vertical room */
+    display: flex;
+    flex-direction: column;
+    min-height: 85px;
+}
+
+.caption-card-header {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-size: 0.68rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+    opacity: 0.7;
+    margin-bottom: 0.35rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    padding-bottom: 0.25rem;
+}
+
+.caption-text-content {
+    font-size: 0.82rem;
+    line-height: 1.5;
+    max-height: 90px;
+    overflow-y: auto;
+    word-break: break-word;
+    opacity: 0.95;
+    white-space: pre-wrap;
+    scrollbar-width: thin;
+}
+
+/* Specs Strip */
+.meta-specs-strip {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
+    padding: 0.4rem 0.6rem;
+    gap: 0.3rem;
+    margin-bottom: 0.75rem;
+}
+
+.spec-item {
+    display: flex;
+    flex-direction: column;
+}
+
+.spec-label {
+    font-size: 0.62rem;
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+    opacity: 0.6;
+    margin-bottom: 1px;
+}
+
+.spec-value {
+    font-size: 0.76rem;
+    font-weight: 700;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* Download Options DOWN with great animation */
+.result-download-down {
+    display: flex;
+    gap: 0.5rem;
+    margin-top: auto;
+}
+
+.btn-download-primary {
+    flex: 1.3;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.45rem;
+    text-decoration: none;
+    font-family: inherit;
+    font-size: 0.82rem;
+    font-weight: 700;
+    padding: 0.58rem 1rem;
+    border-radius: 9px;
+    border: none;
+    cursor: pointer;
+    transition: transform 0.18s ease, background 0.2s ease, box-shadow 0.2s ease;
+    white-space: nowrap;
+}
+
+body.theme-reel .btn-download-primary {
+    background: var(--flame);
+    color: #FFFFFF;
+}
+
+body.theme-reel .btn-download-primary:hover {
+    background: var(--flame-hover);
+    box-shadow: 0 4px 14px rgba(255, 69, 0, 0.35);
+}
+
+body.theme-post .btn-download-primary {
+    background: var(--cream);
+    color: var(--royal-blue);
+}
+
+body.theme-post .btn-download-primary:hover {
+    background: #FFFFFF;
+    box-shadow: 0 4px 14px rgba(248, 243, 240, 0.28);
+}
+
+.btn-action-outline {
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.16);
+    color: inherit;
+    font-family: inherit;
+    font-size: 0.8rem;
+    font-weight: 600;
+    padding: 0.58rem 0.85rem;
+    border-radius: 9px;
+    cursor: pointer;
+    transition: background 0.2s ease;
+    white-space: nowrap;
+}
+
+.btn-action-outline:hover {
+    background: rgba(255, 255, 255, 0.2);
+}
+
+.btn-download-primary:hover .download-bounce-icon {
+    animation: downloadBounce 0.65s ease infinite;
+}
+
+@keyframes downloadBounce {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(3px); }
+}
+
+/* ============================================================
+   POSTS GALLERY DRAWER (Below the 2-parts card)
+   ============================================================ */
+
+.gallery-drawer-wrap {
+    width: 100%;
+    margin-top: 0.15rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    padding-top: 0.55rem;
+}
+
+.gallery-drawer-title {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.74rem;
+    font-weight: 700;
+    opacity: 0.85;
+    margin-bottom: 0.4rem;
+}
+
+.gallery-drawer {
+    max-height: 110px;
+    overflow-y: auto;
+    background: rgba(0, 0, 0, 0.22);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 10px;
+    padding: 0.45rem;
+}
+
+.photos-grid-compact {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(88px, 1fr));
+    gap: 0.4rem;
+}
+
+.photo-item {
+    background: rgba(0, 0, 0, 0.35);
+    border-radius: 7px;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    cursor: pointer;
+    transition: transform 0.15s ease;
+}
+
+.photo-item:hover {
+    transform: translateY(-1px);
+}
+
+.photo-item img {
+    width: 100%;
+    height: 60px;
+    object-fit: cover;
+}
+
+.photo-item a {
+    font-size: 0.64rem;
+    font-weight: 700;
+    color: var(--cream);
+    text-align: center;
+    padding: 0.24rem 0.2rem;
+    text-decoration: none;
+    background: rgba(255, 255, 255, 0.12);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.2rem;
+    transition: background 0.2s ease;
+}
+
+.photo-item a:hover {
+    background: rgba(255, 255, 255, 0.22);
+}
+
+/* ============================================================
+   EXTRACTION ANIMATION HUD & RADAR
+   ============================================================ */
+
+.extraction-hud {
+    width: 100%;
+    max-width: 420px;
+    margin: 0.6rem auto;
+    text-align: center;
+    animation: entranceSpring 0.3s ease forwards;
+}
+
+.radar-spinner {
+    width: 42px;
+    height: 42px;
+    position: relative;
+    margin: 0 auto 0.5rem;
+    border-radius: 50%;
+    border: 2px solid rgba(255, 255, 255, 0.16);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+body.theme-intro .radar-spinner { border-color: rgba(255, 184, 0, 0.3); }
+body.theme-reel .radar-spinner { border-color: rgba(0, 240, 255, 0.3); }
+body.theme-post .radar-spinner { border-color: rgba(255, 184, 0, 0.3); }
+
+.radar-sweep {
+    position: absolute;
+    inset: -2px;
+    border-radius: 50%;
+    border-top: 3px solid #FFFFFF;
+    border-right: 3px solid transparent;
+    animation: radarSpin 0.85s linear infinite;
+}
+
+body.theme-intro .radar-sweep { border-top-color: var(--gold); }
+body.theme-reel .radar-sweep { border-top-color: var(--neon-cyan); }
+body.theme-post .radar-sweep { border-top-color: var(--amber-gold); }
+
+@keyframes radarSpin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+.progress-pct {
+    font-family: 'JetBrains Mono', ui-monospace, monospace;
+    font-size: 1.3rem;
+    font-weight: 700;
+    margin-bottom: 0.25rem;
+}
+
+.progress-track-sm {
+    width: 100%;
+    height: 5px;
+    background: rgba(255, 255, 255, 0.12);
+    border-radius: 9999px;
+    overflow: hidden;
+    margin-bottom: 0.35rem;
+}
+
+.progress-bar-sm {
+    height: 100%;
+    width: 0%;
+    background: #FFFFFF;
+    transition: width 0.15s ease;
+}
+
+body.theme-intro .progress-bar-sm { background: var(--gold); }
+body.theme-reel .progress-bar-sm { background: var(--neon-cyan); }
+body.theme-post .progress-bar-sm { background: var(--amber-gold); }
+
+.progress-status-sm {
+    font-size: 0.74rem;
+    opacity: 0.8;
+}
+
+.error-msg-box {
+    width: 100%;
+    max-width: 500px;
+    background: rgba(239, 68, 68, 0.16);
+    border: 1px solid rgba(239, 68, 68, 0.4);
+    color: #FCA5A5;
+    padding: 0.55rem 0.85rem;
+    border-radius: 10px;
+    font-size: 0.8rem;
+    margin-bottom: 0.55rem;
+    text-align: left;
+}
+
+@keyframes entranceSpring {
+    0% {
+        opacity: 0;
+        transform: translateY(14px) scale(0.97);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+/* ============================================================
+   APPLE-STYLE DOCK (COMPACT & REFINED SIZING)
+   ============================================================ */
+
+.apple-dock-wrapper {
+    position: fixed;
+    bottom: 16px;
+    left: 0;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    pointer-events: none;
+    z-index: 999;
+}
+
+.apple-dock {
+    pointer-events: auto;
+    display: flex;
+    align-items: flex-end;
+    gap: 14px; /* Clean, refined spacing */
+    padding: 6px 16px; /* Compact padding */
+    border-radius: 20px;
+    background: rgba(18, 18, 22, 0.85);
+    backdrop-filter: blur(28px) saturate(180%);
+    -webkit-backdrop-filter: blur(28px) saturate(180%);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.55), 0 1px 2px rgba(255, 255, 255, 0.1) inset;
+    transform: translateZ(0);
+}
+
+.dock-item {
+    position: relative;
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    color: #FFFFFF;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    outline: none;
+    transition: transform 0.2s var(--ease-out-spring), background 0.2s ease, border-color 0.2s ease;
+    will-change: transform;
+}
+
+.dock-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    pointer-events: none;
+}
+
+/* Dock Label (macOS Tooltip) */
+.dock-label {
+    position: absolute;
+    bottom: calc(100% + 10px);
+    left: 50%;
+    transform: translateX(-50%) translateY(3px);
+    background: rgba(12, 12, 15, 0.95);
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    color: #FFFFFF;
+    font-size: 0.68rem;
+    font-weight: 700;
+    letter-spacing: 0.3px;
+    padding: 2px 7px;
+    border-radius: 6px;
+    white-space: nowrap;
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+    transition: opacity 0.18s ease, transform 0.18s ease, visibility 0.18s;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.45);
+}
+
+.dock-item:hover .dock-label {
+    opacity: 1;
+    visibility: visible;
+    transform: translateX(-50%) translateY(0);
+}
+
+/* Active Indicator Dot */
+.dock-dot {
+    position: absolute;
+    bottom: -5px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 3.5px;
+    height: 3.5px;
+    border-radius: 50%;
+    background: #FFFFFF;
+    opacity: 0;
+    transition: opacity 0.2s ease, background 0.2s ease;
+}
+
+.dock-item.active .dock-dot {
+    opacity: 1;
+}
+
+body.theme-intro .dock-item.active .dock-dot { background: var(--gold); }
+body.theme-reel .dock-item.active .dock-dot { background: var(--flame); }
+body.theme-post .dock-item.active .dock-dot { background: var(--cream); }
+
+.dock-item.active {
+    background: rgba(255, 255, 255, 0.18);
+    border-color: rgba(255, 255, 255, 0.3);
+}
+
+body.theme-intro .dock-item.active { border-color: rgba(255, 184, 0, 0.45); }
+body.theme-reel .dock-item.active { border-color: rgba(255, 69, 0, 0.45); }
+body.theme-post .dock-item.active { border-color: rgba(248, 243, 240, 0.45); }
+
+/* ============================================================
+   RESPONSIVE DESIGN (MOBILE PHONE OPTIMIZATION)
+   ============================================================ */
+
+@media (max-width: 640px) {
+    .app-header {
+        height: 48px;
+        padding: 0 0.85rem;
+    }
+
+    .brand-title {
+        font-size: 0.95rem;
+    }
+
+    .views-wrapper {
+        padding-bottom: 66px;
+    }
+
+    .view-panel {
+        bottom: 66px;
+        padding: 0.5rem 0.8rem;
+    }
+
+    .intro-title {
+        font-size: 1.85rem;
+        letter-spacing: -0.5px;
+    }
+
+    .intro-subtitle {
+        font-size: 0.84rem;
+        margin-bottom: 1.2rem;
+    }
+
+    .intro-shift-actions {
+        flex-direction: column;
+        width: 100%;
+        gap: 0.45rem;
+    }
+
+    .btn-shift {
+        padding: 0.62rem 0.95rem;
+        font-size: 0.82rem;
+    }
+
+    .reel-title-sm,
+    .post-title-sm {
+        font-size: 1.35rem;
+    }
+
+    .search-box-reel,
+    .search-box-post {
+        flex-wrap: wrap;
+        padding: 3px;
+    }
+
+    .search-box-reel input,
+    .search-box-post input {
+        width: 100%;
+        padding: 0.45rem 0.55rem;
+    }
+
+    .btn-paste-sm,
+    .btn-paste-post {
+        flex: 1;
+        padding: 0.5rem 0.45rem;
+    }
+
+    .btn-grab-reel,
+    .btn-fetch-post {
+        flex: 1.5;
+        padding: 0.5rem 0.45rem;
+    }
+
+    /* Stack to vertical on narrow phone screens */
+    .result-layout-two-parts {
+        grid-template-columns: 1fr;
+        gap: 0.65rem;
+    }
+
+    .video-preview-wrapper-lg,
+    .photo-featured-wrapper-lg {
+        height: 180px;
+    }
+
+    .caption-text-content {
+        max-height: 50px;
+    }
+
+    .gallery-drawer {
+        max-height: 80px;
+    }
+
+    .apple-dock-wrapper {
+        bottom: 10px;
+        padding-bottom: env(safe-area-inset-bottom, 4px);
+    }
+
+    .apple-dock {
+        gap: 12px;
+        padding: 5px 14px;
+        border-radius: 18px;
+    }
+
+    .dock-item {
+        width: 36px;
+        height: 36px;
+    }
+}
